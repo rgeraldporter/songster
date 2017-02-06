@@ -1,0 +1,15 @@
+{
+  "name": "songster",
+  "version": "0.1.0",
+  "description": "Birdsong playback module written in Node.js intended for use as part of a playback machine using a lightweight single-board computer such as a Raspberry Pi.",
+  "main": "index.js",
+  "author": "Rob Porter <rob@inpictures.ca>",
+  "license": "MIT",
+  "dependencies": {
+    "stream-player": "^0.3.0",
+    "suncalc": "^1.8.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}
