@@ -1,6 +1,25 @@
 const SunCalc = require('suncalc');
-const player = require('./lib/player');
 const storage = require('node-persist');
+const player = require('./lib/player');
+const server = require('./lib/server.js');
+const Config = require('./models/config.js');
+
+storage.initSync();
+
+const defaultConfig = {
+    latitude: 43.2258,
+    longitude: -79.8711,
+    cycle: 'diurnal',
+    sort: 'random',
+    songFile: './songs/EAME2.mp3',
+    between: 15 * 1000,
+    pause: false
+};
+
+let currentConfig = Object.assign( defaultConfig, Config.get() );
+
+// needed when we first run
+storage.setItemSync('config', currentConfig);
 
 // @todo: make these `let`, changed by web client
 const [latitude, longitude] = [
@@ -20,11 +39,9 @@ const isNoctural = () =>
 // these will all become `let`
 const songFile = './songs/EAME2.mp3'; // @todo: make into songFolder ?
 const cycle = process.env.CYCLE || 'diurnal';
-const between = process.env.BREAKS || 30 * 1000; // 3 mins
+const between = process.env.BREAKS || 15 * 1000; // 3 mins
 const sort = process.env.ORDER || 'random';
 const pause = process.env.PAUSE || false;
-
-storage.initSync();
 
 // disabled for development purposes
 const verifyCycle = () =>
@@ -44,7 +61,7 @@ const scheduleNext = () => {
 
 const playNow = () => {
 
-    storage.setItemSync('nextPlay', between);
+    storage.setItemSync('runtime/nextPlay', between);
     console.log('starting next track: ' + songFile);
     player.add(songFile);
 
@@ -58,9 +75,15 @@ const playNow = () => {
     scheduleNext();
 };
 
-if ( storage.getItemSync('nextPlay') ) {
-    setTimeout( playNow, storage.getItemSync('nextPlay') );
+if ( storage.getItemSync('runtime/nextPlay') ) {
+    setTimeout( playNow, storage.getItemSync('runtime/nextPlay') );
 }
 else {
     playNow();
 }
+
+// start the service
+server.listen(8813, () => {
+    const instance = server.address();
+    console.info(`Server instance started: ${instance.address} ${instance.port}`);
+});
