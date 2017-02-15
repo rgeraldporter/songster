@@ -10,8 +10,8 @@ player.on('play end', () => {
     console.log('Completed');
 });
  
-player.on('song added', () => {
-    console.log('Queued up');
+player.on('song added', (file, meta) => {
+    console.log('Queued up', file, meta);
 });
 
 module.exports = player;
