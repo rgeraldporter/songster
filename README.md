@@ -1,9 +1,14 @@
 #Songster
-#### v0.3.0
+#### v0.3.1
+[![Build Status](https://travis-ci.org/rgeraldporter/songster.svg?branch=master)](https://travis-ci.org/rgeraldporter/songster)
 
 Birdsong playback module written in Node.js intended for use as part of a playback machine using a lightweight single-board computer such as a Raspberry Pi.
 
 This is a work in progress. The API will change.
+
+## Node Version 7.5.x+
+
+This application has been written to make use of the latest ES standards while running without Babel or any other transpilers, and thus it is recommended to run on Node v7.5.0 and up, though it will likely run on v6.x+.
 
 ##License
 

@@ -5,7 +5,7 @@ const Promise = require('bluebird');
 const {liftAN, Success, Failure} = require('syfmto');
 
 const successToClient = response => result => code =>
-    response.send(code, result);
+    Promise.try(() => response.send(code, result));
 
 const getConfig = (request, response, next) =>
     successToClient(response)(Config.get())(200);

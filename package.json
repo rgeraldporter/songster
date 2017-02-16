@@ -1,6 +1,6 @@
 {
   "name": "Songster",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Birdsong playback module written in Node.js intended for use as part of a playback machine using a lightweight single-board computer such as a Raspberry Pi.",
   "main": "./src/index.js",
   "author": "Rob Porter <rob@inpictures.ca>",
@@ -8,7 +8,8 @@
     "start": "./node_modules/forever/bin/forever start ./src/index.js",
     "stop": "./node_modules/forever/bin/forever stop ./src/index.js",
     "list": "./node_modules/forever/bin/forever list ./src/index.js",
-    "once": "node ./src/index.js"
+    "once": "node ./src/index.js",
+    "unit": "NODE_ENV=unit JASMINE_CONFIG_PATH=test/jasmine.json node ./node_modules/jasmine/bin/jasmine"
   },
   "dependencies": {
     "bluebird": "3.4.7",
@@ -34,5 +35,9 @@
     "birds",
     "Raspberry Pi",
     "playback"
-  ]
+  ],
+  "devDependencies": {
+    "jasmine": "^2.5.3",
+    "proxyquire": "^1.7.11"
+  }
 }
