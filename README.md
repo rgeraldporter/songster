@@ -1,5 +1,5 @@
 #Songster
-#### v0.3.1
+#### v0.4.0
 [![Build Status](https://travis-ci.org/rgeraldporter/songster.svg?branch=master)](https://travis-ci.org/rgeraldporter/songster)
 
 Birdsong playback module written in Node.js intended for use as part of a playback machine using a lightweight single-board computer such as a Raspberry Pi.

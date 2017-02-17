@@ -1,11 +1,12 @@
 const storage = require('node-persist');
+const store = storage.create({ dir: './.node-persist/' + (process.env.NODE_ENV || 'production') });
 
-storage.initSync();
+store.initSync();
 
 const get = () =>
-    storage.getItemSync('config');
+    store.getItemSync('config');
 
 const put = values =>
-    storage.setItemSync('config', values);
+    store.setItemSync('config', values);
 
 module.exports = {get, put};

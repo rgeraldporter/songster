@@ -19,7 +19,12 @@ describe('The config endpoint', () => {
     });
 
     it('should be able to put to the configuration', done => {
-        const request = { body: '{ "data": 101 }' };
+        const request = {
+            body: { data: 101 },
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
         const response = { send: () => null };
         const next = () => null;
 

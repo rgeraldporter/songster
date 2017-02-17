@@ -11,7 +11,7 @@ const getConfig = (request, response, next) =>
     successToClient(response)(Config.get())(200);
 
 const putConfig = (request, response, next) =>
-    successToClient(response)(Config.put(JSON.parse(request.body)))(201);
+    successToClient(response)(Config.put(request.body))(201);
 
 module.exports = server => ({
     getConfig,

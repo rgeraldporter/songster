@@ -19,7 +19,7 @@ const defaultConfig = {
 let currentConfig = Object.assign( defaultConfig, Config.get() );
 
 // needed when we first run
-storage.setItemSync('config', currentConfig);
+Config.put(currentConfig);
 
 // @todo: make these `let`, changed by web client
 const [latitude, longitude] = [
