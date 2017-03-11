@@ -3,18 +3,19 @@ const Promise = require('bluebird');
 const Time = require('../../models/time');
 const {liftAN, Success, Failure} = require('syfmto');
 
-const successToClient = response => result => code =>
-    Promise.try(() => response.send(code, result));
+const respondToClient = response => code => result => response.send(code, result);
 
-const getTime= (request, response, next) =>
-    successToClient(response)(Time.get())(200);
+const getTime = (request, response, next) =>
+    Promise.try(() => Time.get())
+        .then(respondToClient(response)(200))
+        .catch(respondToClient(response)(500));
 
 const putTime = (request, response, next) =>
-    successToClient(response)(Time.put(request.body))(201);
+    Promise.try(() => Time.put(request.body))
+        .then(respondToClient(response)(201))
+        .catch(respondToClient(response)(500));
 
 module.exports = server => ({
     getTime,
     putTime
 });
-
-
