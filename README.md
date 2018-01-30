@@ -1,20 +1,16 @@
 # Songster
-#### v0.4.0
+#### v0.5.0
 [![Build Status](https://travis-ci.org/rgeraldporter/songster.svg?branch=master)](https://travis-ci.org/rgeraldporter/songster)
 
 Birdsong playback module written in Node.js intended for use as part of a playback machine using a lightweight single-board computer such as a Raspberry Pi.
 
-This is a work in progress. The API will change.
-
-## Node Version 7.5.x+
-
-This application has been written to make use of the latest ES standards while running without Babel or any other transpilers, and thus it is recommended to run on Node v7.5.0 and up, though it will likely run on v6.x+.
+This is a work in progress. API is not set in stone yet.
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2017 Robert Gerald Porter
+Copyright (c) 2017-2018 Robert Gerald Porter
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
