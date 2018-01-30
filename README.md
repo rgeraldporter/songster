@@ -1,4 +1,4 @@
-#Songster
+# Songster
 #### v0.4.0
 [![Build Status](https://travis-ci.org/rgeraldporter/songster.svg?branch=master)](https://travis-ci.org/rgeraldporter/songster)
 
@@ -10,7 +10,7 @@ This is a work in progress. The API will change.
 
 This application has been written to make use of the latest ES standards while running without Babel or any other transpilers, and thus it is recommended to run on Node v7.5.0 and up, though it will likely run on v6.x+.
 
-##License
+## License
 
 The MIT License (MIT)
 
