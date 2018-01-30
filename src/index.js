@@ -69,13 +69,14 @@ const playNow = () => {
     if ( verifyCycle() ) {
 
         player.play();
+        nextPlay(playNow, storage.getItemSync('runtime/nextPlay'));
     }
     else {
         console.log('Cycle set to ' + Config.get().cycle + ', does not match current time cycle. Not playing. Rescheduling...'+ ' in ' + getSeconds() + ' seconds.');
         nextPlay(playNow, storage.getItemSync('runtime/nextPlay'));
         return;
     }
-    scheduleNext();
+    //scheduleNext();
 };
 
 
