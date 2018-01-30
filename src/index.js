@@ -4,6 +4,8 @@ const player = require('./lib/player');
 const server = require('./lib/server.js');
 const Config = require('./models/config.js');
 
+let currentTimeout, hasPaused;
+
 storage.initSync();
 
 const defaultConfig = {
@@ -12,22 +14,25 @@ const defaultConfig = {
     cycle: 'diurnal',
     sort: 'random',
     songFile: './songs/EAME2.mp3',
-    between: 15 * 1000,
+    interval: 0.2,
     pause: false
 };
 
-let currentConfig = Object.assign( defaultConfig, Config.get() );
+const currentConfig = Object.assign( defaultConfig, Config.get() );
 
-// needed when we first run
+const nextPlay = (fn, time) => {
+    clearTimeout(currentTimeout);
+    currentTimeout = setTimeout(fn, time);
+};
+
+// needed when we run the very first time (no storage yet)
 Config.put(currentConfig);
 
-// @todo: make these `let`, changed by web client
-const [latitude, longitude] = [
-    process.env.LATITUDE || 43.2557,
-    process.env.LONGITUDE || -79.8711
-];
-
-const sunTimes = SunCalc.getTimes(new Date(), latitude, longitude);
+// need to change so it'll recalc as long/lat get adjusted, not just first time
+const sunTimes = SunCalc.getTimes(new Date(), Config.get().latitude, Config.get().longitude);
+const getMinutes = () => Config.get().interval;
+const getSeconds = () => Config.get().interval * 60;
+const getMilliseconds = () => Config.get().interval * 1000 * 60;
 
 const isDiurnal = () =>
     new Date() < sunTimes.sunset &&
@@ -36,33 +41,29 @@ const isDiurnal = () =>
 const isNoctural = () =>
     !isDiurnal();
 
-// these will all become `let`
+// @todo change to folders
 const songFile = './songs/EAME2.mp3'; // @todo: make into songFolder ?
-const cycle = process.env.CYCLE || 'diurnal';
-const between = process.env.BREAKS || 15 * 1000; // 3 mins
-const sort = process.env.ORDER || 'random';
-const pause = process.env.PAUSE || false;
 
 // disabled for development purposes
 const verifyCycle = () =>
-    true; /*cycle === 'diurnal'
-    ? isDiurnal()
-    : isNoctural();*/
+    true; /*Config.get().cycle === 'diurnal'
+        ? isDiurnal()
+        : isNoctural();*/
 
 const scheduleNext = () => {
     player.on('play end', () => {
-        console.log('scheduling next');
-        setTimeout( playNow, between );
+        console.log('Scheduling next in: '+ getSeconds() +' seconds.');
+        nextPlay(playNow, getMilliseconds());
     });
     return true;
 };
 
-// http: add web endpoint that will accept changes
-
 const playNow = () => {
 
-    storage.setItemSync('runtime/nextPlay', between);
-    console.log('starting next track: ' + songFile);
+    storage.setItemSync('runtime/nextPlay', getMilliseconds());
+
+    console.log('starting next track: ' + songFile + ' in ' + getSeconds() + ' seconds.');
+
     player.add(songFile);
 
     if ( verifyCycle() ) {
@@ -70,17 +71,40 @@ const playNow = () => {
         player.play();
     }
     else {
-        console.log('Cycle set to ' + cycle + ', does not match current time cycle. Not playing. Rescheduling...');
+        console.log('Cycle set to ' + Config.get().cycle + ', does not match current time cycle. Not playing. Rescheduling...'+ ' in ' + getSeconds() + ' seconds.');
+        nextPlay(playNow, storage.getItemSync('runtime/nextPlay'));
+        return;
     }
     scheduleNext();
 };
 
+
+// first run
 if ( storage.getItemSync('runtime/nextPlay') ) {
-    setTimeout( playNow, storage.getItemSync('runtime/nextPlay') );
+    nextPlay(playNow, storage.getItemSync('runtime/nextPlay'));
 }
 else {
     playNow();
 }
+
+// setup a loop wherein we check to see if we've paused
+// and we then kill the next scheduled thing because it could be minutes away
+setInterval(() => {
+
+    if ( Config.get().pause ) {
+        hasPaused = true;
+        nextPlay(() => console.log('PAUSED, skipping... checking again in 5 seconds...'), 5000);
+        return;
+    }
+
+    if ( hasPaused && ! Config.get().pause ) {
+        
+        // we've resumed
+
+        playNow();
+        hasPaused = false;     
+    }
+}, 5000);
 
 // start the service
 server.listen(8813, () => {
