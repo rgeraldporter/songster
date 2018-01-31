@@ -1,17 +1,8 @@
-const StreamPlayer = require('stream-player');
+const mpg321 = require('mpg321');
+const player = mpg321().remote();
 
-const player = new StreamPlayer();
-
-player.on('play start', args => {
-    console.log('Playing...');
-});
-
-player.on('play end', () => {
-    console.log('Completed');
-});
- 
-player.on('song added', (file, meta) => {
-    console.log('Queued up', file, meta);
-});
+player.on('start', () => console.log('Playing...'));
+player.on('end', () => console.log('Completed'));
+process.on('SIGINT', () => process.exit());
 
 module.exports = player;

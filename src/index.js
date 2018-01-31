@@ -51,7 +51,7 @@ const verifyCycle = () =>
         : isNoctural();*/
 
 const scheduleNext = () => {
-    player.on('play end', () => {
+    player.on('end', () => {
         console.log('Scheduling next in: '+ getSeconds() +' seconds.');
         nextPlay(playNow, getMilliseconds());
     });
@@ -64,19 +64,15 @@ const playNow = () => {
 
     console.log('starting next track: ' + songFile + ' in ' + getSeconds() + ' seconds.');
 
-    player.add(songFile);
-
     if ( verifyCycle() ) {
 
-        player.play();
+        player.play(songFile);
         nextPlay(playNow, storage.getItemSync('runtime/nextPlay'));
     }
     else {
         console.log('Cycle set to ' + Config.get().cycle + ', does not match current time cycle. Not playing. Rescheduling...'+ ' in ' + getSeconds() + ' seconds.');
         nextPlay(playNow, storage.getItemSync('runtime/nextPlay'));
-        return;
     }
-    //scheduleNext();
 };
 
 
