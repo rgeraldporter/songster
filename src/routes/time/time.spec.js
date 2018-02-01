@@ -1,7 +1,12 @@
-const timeModelMock = {get: () => 'Mon  6 Mar 2017 16:58:14 EST', put: () => true};
+const timeModelMock = {
+    get: () => 'Mon  6 Mar 2017 16:58:14 EST',
+    put: () => true
+};
 
 const proxyquire = require('proxyquire');
-const timeController = proxyquire('./time', { '../../models/time': timeModelMock });
+const timeController = proxyquire('./time', {
+    '../../models/time': timeModelMock
+});
 const controller = timeController(() => null);
 
 describe('The time endpoint', () => {
@@ -13,7 +18,10 @@ describe('The time endpoint', () => {
         spyOn(response, 'send').and.callThrough();
 
         controller.getTime(request, response, next).then(() => {
-            expect(response.send).toHaveBeenCalledWith(200, 'Mon  6 Mar 2017 16:58:14 EST');
+            expect(response.send).toHaveBeenCalledWith(
+                200,
+                'Mon  6 Mar 2017 16:58:14 EST'
+            );
             done();
         });
     });
@@ -31,7 +39,9 @@ describe('The time endpoint', () => {
         spyOn(timeModelMock, 'put').and.callThrough();
 
         controller.putTime(request, response, next).then(() => {
-            expect(timeModelMock.put).toHaveBeenCalledWith({ time: 'Mon  6 Mar 2017 20:50:24 EST' });
+            expect(timeModelMock.put).toHaveBeenCalledWith({
+                time: 'Mon  6 Mar 2017 20:50:24 EST'
+            });
             done();
         });
     });

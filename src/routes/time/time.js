@@ -1,9 +1,10 @@
 const restify = require('restify');
 const Promise = require('bluebird');
 const Time = require('../../models/time');
-const {liftAN, Success, Failure} = require('syfmto');
+const { liftAN, Success, Failure } = require('syfmto');
 
-const respondToClient = response => code => result => response.send(code, result);
+const respondToClient = response => code => result =>
+    response.send(code, result);
 
 const getTime = (request, response, next) =>
     Promise.try(() => Time.get())

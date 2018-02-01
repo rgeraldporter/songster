@@ -1,7 +1,9 @@
 const configModelMock = { get: () => ({ data: 1 }), put: () => true };
 
 const proxyquire = require('proxyquire');
-const configController = proxyquire('./config', { '../../models/config': configModelMock });
+const configController = proxyquire('./config', {
+    '../../models/config': configModelMock
+});
 const controller = configController(() => null);
 
 describe('The config endpoint', () => {

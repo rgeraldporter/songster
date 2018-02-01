@@ -10,7 +10,7 @@ describe('Songster server', () => {
             return hippie(server)
                 .put('/config')
                 .json()
-                .send({value: "something"})
+                .send({ value: 'something' })
                 .expectStatus(201)
                 .end(function(err, res, body) {
                     if (err) throw err;
