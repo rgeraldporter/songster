@@ -12,7 +12,6 @@ const logChanges = R.pipe(
 );
 
 const get = () => store.getItemSync('config');
-
 const setStore = values => store.setItemSync('config', values);
 const mergeIn = values => Object.assign(get() || {}, values);
 

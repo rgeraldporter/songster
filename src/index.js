@@ -5,25 +5,26 @@ const storage = require('node-persist');
 const player = require('./lib/player');
 const server = require('./lib/server.js');
 const Config = require('./models/config.js');
+const files = require('./lib/files');
 const mainLoopInterval = 5000;
 
 let currentTimeout, hasPaused;
 
 storage.initSync();
 
-const defaultConfig = {
+const getDefaultConfig = () => ({
     latitude: 43.2258,
     longitude: -79.8711,
     cycle: 'diurnal',
     sort: 'random',
-    songFile: './songs/BOBO/BOBO1.mp3',
+    directory: 'BOBO',
     interval: 0.2,
     pause: false
-};
+});
 
 // in case this is the first run, populate with defaults
 // also will populate in new configs as they are added
-Config.put(Object.assign(defaultConfig, Config.get()));
+Config.put(Object.assign(getDefaultConfig(), Config.get()));
 
 const doPause = () => (hasPaused = true);
 const unPause = () => (hasPaused = false);
@@ -34,23 +35,20 @@ const nextAction = (fn, time) => {
     currentTimeout = setTimeout(fn, time);
 };
 
-// need to change so it'll recalc as long/lat get adjusted, not just first time
-const sunTimes = SunCalc.getTimes(
+const getSunTimes = () => SunCalc.getTimes(
     new Date(),
     Config.get().latitude,
     Config.get().longitude
 );
+
 const getMinutes = () => Config.get().interval;
 const getSeconds = () => Config.get().interval * 60;
 const getMilliseconds = () => Config.get().interval * 1000 * 60;
+const getSongFile = () => files.getRandomFile(Config.get().directory);
 
 const isDiurnal = () =>
-    new Date() < sunTimes.sunset && new Date() > sunTimes.sunrise;
-
-const isNoctural = () => !isDiurnal();
-
-// @todo change to folders
-const songFile = './songs/BOBO/BOBO1.mp3'; // @todo: make into songFolder ?
+    new Date() < getSunTimes().sunset && new Date() > getSunTimes().sunrise;
+const isNoctural = () => R.complement(isDiurnal);
 
 player.on('end', () =>
     nextAction(playNow, storage.getItemSync('runtime/nextPlay'))
@@ -76,7 +74,7 @@ const verifyCycle = () =>
         : isNoctural();*/
 
 const attemptPlayback = () =>
-    verifyCycle() ? player.play(songFile) : deferPlayback();
+    verifyCycle() ? player.play(getSongFile()) : deferPlayback();
 
 const playNow = () =>
     Promise.try(() =>

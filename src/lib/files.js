@@ -1,3 +1,4 @@
+const Promise = require('bluebird');
 const fsx = require('fs-extra');
 const path = require('path');
 
@@ -19,6 +20,6 @@ const getFiles = dir =>
         .filter(isFile)
         .map(path => path.split('\\').pop().split('/').pop());
 
-const getRandomFile = dir => getFiles(dir).then(randomFile);
+const getRandomFile = dir => `./songs/${dir}/` + randomFile(getFiles(dir)); // relative to index.js for now
 
-module.exports = { getDirectories, getFiles };
+module.exports = { getDirectories, getFiles, getRandomFile };
