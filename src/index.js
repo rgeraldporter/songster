@@ -7,6 +7,7 @@ const server = require('./lib/server.js');
 const Config = require('./models/config.js');
 const files = require('./lib/files');
 const mainLoopInterval = 5000;
+const moment = require('moment');
 
 let currentTimeout, hasPaused;
 
@@ -31,12 +32,13 @@ const unPause = () => (hasPaused = false);
 const isPaused = () => hasPaused;
 
 const nextAction = (fn, time) => {
+    console.log('next action', fn, time);
     clearTimeout(currentTimeout);
     currentTimeout = setTimeout(fn, time);
 };
 
 const getSunTimes = () => SunCalc.getTimes(
-    new Date(),
+    moment(),
     Config.get().latitude,
     Config.get().longitude
 );
@@ -47,7 +49,7 @@ const getMilliseconds = () => Config.get().interval * 1000 * 60;
 const getSongFile = () => files.getRandomFile(Config.get().directory);
 
 const isDiurnal = () =>
-    new Date() < getSunTimes().sunset && new Date() > getSunTimes().sunrise;
+    moment() < getSunTimes().sunset && moment() > getSunTimes().sunrise;
 const isNoctural = () => R.complement(isDiurnal);
 
 player.on('end', () =>
@@ -67,17 +69,17 @@ const deferPlayback = () =>
         )
     );
 
-// disabled for development purposes
 const verifyCycle = () =>
-    true; /*Config.get().cycle === 'diurnal'
+    Config.get().cycle === 'diurnal'
         ? isDiurnal()
-        : isNoctural();*/
+        : isNoctural();
 
 const attemptPlayback = () =>
     verifyCycle() ? player.play(getSongFile()) : deferPlayback();
 
 const playNow = () =>
     Promise.try(() =>
+        console.log('Playing', getSongFile());
         storage.setItemSync('runtime/nextPlay', getMilliseconds())
     )
         .then(() =>
