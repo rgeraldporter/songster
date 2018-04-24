@@ -32,7 +32,7 @@ const unPause = () => (hasPaused = false);
 const isPaused = () => hasPaused;
 
 const nextAction = (fn, time) => {
-    console.log('next action', fn, time);
+    console.log('next action', fn.name, time);
     clearTimeout(currentTimeout);
     currentTimeout = setTimeout(fn, time);
 };
@@ -48,8 +48,10 @@ const getSeconds = () => Config.get().interval * 60;
 const getMilliseconds = () => Config.get().interval * 1000 * 60;
 const getSongFile = () => files.getRandomFile(Config.get().directory);
 
-const isDiurnal = () =>
-    moment() < getSunTimes().sunset && moment() > getSunTimes().sunrise;
+const isDiurnal = () => {
+    console.log('isDiurnal', moment(), getSunTimes().sunset, getSunTimes().sunrise);
+    return (moment() < getSunTimes().sunset) && (moment() > getSunTimes().sunrise);
+}
 const isNoctural = () => R.complement(isDiurnal);
 
 player.on('end', () =>
