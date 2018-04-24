@@ -55,6 +55,7 @@ const isDiurnal = () => {
 const isNoctural = () => R.complement(isDiurnal);
 
 player.on('end', () =>
+    console.log('Play complete');
     nextAction(playNow, storage.getItemSync('runtime/nextPlay'))
 );
 
