@@ -1,6 +1,6 @@
 {
   "name": "Songster",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Birdsong playback module written in Node.js intended for use as part of a playback machine using a lightweight single-board computer such as a Raspberry Pi.",
   "main": "./src/index.js",
   "author": "Rob Porter <rob@inpictures.ca>",

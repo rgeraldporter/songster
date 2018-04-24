@@ -78,10 +78,10 @@ const attemptPlayback = () =>
     verifyCycle() ? player.play(getSongFile()) : deferPlayback();
 
 const playNow = () =>
-    Promise.try(() =>
+    Promise.try(() => {
         console.log('Playing', getSongFile());
         storage.setItemSync('runtime/nextPlay', getMilliseconds())
-    )
+    })
         .then(() =>
             console.log(
                 'Scheduling next playback in ' +
